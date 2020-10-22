@@ -11,6 +11,7 @@ import (
 	sq "github.com/Masterminds/squirrel"
 	"github.com/guregu/null"
 	"github.com/jmoiron/sqlx"
+	"github.com/lib/pq"
 
 	"github.com/stellar/go/services/horizon/internal/db2"
 	"github.com/stellar/go/support/db"
@@ -556,6 +557,32 @@ type OffersQuery struct {
 	Sponsor   string
 	Selling   *xdr.Asset
 	Buying    *xdr.Asset
+}
+
+// Price represents an xdr.Price value encoded as a postgres 2-element array
+type Price struct {
+	XDR xdr.Price
+}
+
+// Scan reads from a src into an xdr.Price
+func (p *Price) Scan(src interface{}) error {
+	// assuming the price is represented as a two-element array [n,d]
+	arr := pq.Int64Array{}
+	err := arr.Scan(src)
+
+	if err != nil {
+		return err
+	}
+
+	if len(arr) != 2 {
+		return errors.New("price array should have exactly 2 elements")
+	}
+
+	*p = Price{XDR: xdr.Price{
+		N: xdr.Int32(arr[0]),
+		D: xdr.Int32(arr[1]),
+	}}
+	return nil
 }
 
 // TotalOrderID represents the ID portion of rows that are identified by the

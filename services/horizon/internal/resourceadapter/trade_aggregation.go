@@ -28,13 +28,13 @@ func PopulateTradeAggregation(
 		return err
 	}
 	dest.Average = price.StringFromFloat64(row.Average)
-	dest.High = row.High.String()
-	dest.HighR = row.High
-	dest.Low = row.Low.String()
-	dest.LowR = row.Low
-	dest.Open = row.Open.String()
-	dest.OpenR = row.Open
-	dest.Close = row.Close.String()
-	dest.CloseR = row.Close
+	dest.High = row.High.XDR.String()
+	dest.HighR = row.High.XDR
+	dest.Low = row.Low.XDR.String()
+	dest.LowR = row.Low.XDR
+	dest.Open = row.Open.XDR.String()
+	dest.OpenR = row.Open.XDR
+	dest.Close = row.Close.XDR.String()
+	dest.CloseR = row.Close.XDR
 	return nil
 }
